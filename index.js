@@ -57,11 +57,27 @@ server.post("/api/users", (req, res) => {
         res.status(201).json({ success: true, user });
       })
       .catch(err => {
-        res
-          .status(500)
-          .json({
-            error: "There was an error while saving the user to the database"
-          });
+        res.status(500).json({
+          error: "There was an error while saving the user to the database"
+        });
       });
   }
+});
+
+server.delete("/api/users/:id", (req, res) => {
+  const id = req.params.id;
+
+  db.remove(id)
+    .then(user => {
+      if (user) {
+        res.status(204).end();
+      } else {
+        res
+          .status(404)
+          .json({ message: "The user with the specified ID does not exist." });
+      }
+    })
+    .catch(err => {
+      res.status(500).json({ error: "The user could not be removed" });
+    });
 });
